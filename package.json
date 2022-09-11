@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Tarun Kumar , Shaily Tripathi , Ajit Singh , Manashi Bauri",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.26.1",
