@@ -13,7 +13,7 @@ const authenticate = function (req, res, next) {
         // console.log(token);
         if (!token) return res.status(400).send({ status: false, msg: "token must be present" });
 
-        // let decodedToken =
+        // let decodedToken =    <--- ye kaam ka nahi hai
         jwt.verify(token, "project-1-group-59", function (err, decodedToken) {
             if (err) { return res.status(401).send({ status: false, msg: "token is invalid" }) }
             // console.log(decodedToken);
@@ -69,10 +69,10 @@ const authorisation = async function (req, res, next) {
 
             if (q.category && q.category.trim() !== "") { temp.category = q.category.trim() }
             // this is for captital "authorid"
-            if (q.authorid && q.authorid.trim() !== "") {
-                if (!ObjectId.isValid(q.authorid.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
-                temp.authorId = q.authorid.trim()
-            }
+            // if (q.authorid && q.authorid.trim() !== "") {
+            //     if (!ObjectId.isValid(q.authorid.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
+            //     temp.authorId = q.authorid.trim()
+            // }
             // this is for captital "authorId"
             if (q.authorId && q.authorId.trim() !== "") {
                 if (!ObjectId.isValid(q.authorId.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
@@ -82,13 +82,13 @@ const authorisation = async function (req, res, next) {
             // this is for "tags"
             if (q.tags && q.tags.trim() !== "") { temp.tags = q.tags.trim() }
             // this is for "tag"
-            if (q.tag && q.tag.trim() !== "") { temp.tag = q.tag.trim() }
+            // if (q.tag && q.tag.trim() !== "") { temp.tag = q.tag.trim() }
 
             if (q.subcategory && q.subcategory.trim() !== "") { temp.subcategory = q.subcategory.trim() }
 
             if (q.unpublished && q.unpublished.trim() !== "") {
                 if (q.unpublished.trim() == "false") {
-                    temp.isPublished = false
+                    temp.isPublished = false 
                 } else { temp.isPublished = true }
             }
             if (Object.values(temp) == 0) return res.status(400).send({ status: false, msg: "please apply filter" })

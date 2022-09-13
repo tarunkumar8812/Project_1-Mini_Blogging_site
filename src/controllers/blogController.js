@@ -144,9 +144,9 @@ const updateBlog = async function (req, res) {
         let requestBody = req.body;
 
         let { title, body, tags, subcategory } = requestBody
-       // console.log(title, body, tags, subcategory);
+        // console.log(title, body, tags, subcategory);
         if (Object.keys(requestBody).length == 0) return res.status(400).send({ status: false, msg: "Please provide blog details to update" });
-        
+
         let temp1 = {}
         let temp2 = {}
 
@@ -169,7 +169,7 @@ const updateBlog = async function (req, res) {
             if (isValidForArray(subcategory) == false) return res.status(400).send({ status: false, msg: "Subcategory is required and should be (String or Array of String)" })
             temp2.subcategory = isValidForArray(subcategory)
         }
-        
+
         let blog = await blogModel.findOne({ _id: blogId, isDeleted: true })//.select({isDeleted:1,_id:0})
         // console.log(blog);
         if (!blog) { return res.status(404).send({ status: false, msg: "No such blog present in DB or is already deleted" }) }
@@ -210,7 +210,7 @@ let deleteBlogsByQuery = async function (req, res) {
         if (temp.isDeleted != false) return res.status(404).send({ status: false, msg: "already Deleted" })
 
         await blogModel.updateMany(temp, { isDeleted: true, deletedAt: moment() }, { new: true })
-        return res.status(200).send()
+        return res.status(200).send({ status: true, msg: "deleted succsesful" })
     }
     catch (err) {
         return res.status(500).send({ status: false, msg: err.message })
