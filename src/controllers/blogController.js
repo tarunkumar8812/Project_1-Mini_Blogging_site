@@ -22,7 +22,7 @@ const createBlogs = async function (req, res) {
         if (isValid(body) == false) return res.status(400).send({ status: false, msg: "Body is required and should be string" })
 
         const id = await authorModel.findById(authorId)
-        if (!id) return res.status(404).send({ status: false, msg: "No data found " })
+        if (!id) return res.status(404).send({ status: false, msg: "No data found" })
 
         // --------------tags are not mandatory as per question ----------------
         if (tags) { if (isValidForArray(tags) == false) return res.status(400).send({ status: false, msg: "Tag is required and should be (String or Array of String)" }) }
@@ -113,13 +113,13 @@ const updateBlog = async function (req, res) {
         const updatedBlog = await blogModel.findOneAndUpdate(
             { _id: blogId, isDeleted: false },
             {
-                temp1,
+                title: temp1.title,
+                body: temp1.body,
                 $addToSet: temp2,
                 isPublished: true,
                 publishedAt: moment()
             },
             { new: true });
-        console.log(updatedBlog);
 
         if (!updatedBlog) { return res.status(404).send({ status: false, msg: "No data found" }) }
 

@@ -3,7 +3,6 @@
 function isValidName(value) {
     if (typeof value !== "string" || value.trim() == "") { return false }
     var isValid = /^([a-zA-Z]){2,15}$/
-    // console.log(value.trim());
     return isValid.test(value.trim());
 }
 
@@ -38,21 +37,17 @@ function isValidPassword(value) {
 // ---------------------------------------------- this is for blogs validation ------------------------------------------------
 
 const isValid = function (value) { //function to check entered data is valid or not
-
     if (typeof value == "string") {
         if (value.trim() === "") {
-            //console.log(value.trim())
             return false
         } else { return value.trim() }
     } else { return false }
 }
 
 const isValidForArray = function (value) {      //function to check entered data in array is valid or not
-    //console.log("value in isValidForArray function - " + value);
     if (typeof value == "string") { return isValid(value) }
     const newArr = []
     if (Array.isArray(value)) {
-        // console.log(value);
         for (let i = 0; i < value.length; i++) {    //example :-   ["ghfgh","   ",56444,"freendon 1947,"ghhgf"]
             if (typeof (value[i]) == "string") {
                 if (value[i].trim() !== "") {
@@ -61,7 +56,6 @@ const isValidForArray = function (value) {      //function to check entered data
             }
             else { return false }
         }
-        // console.log(newArr)
         return newArr
     }
     else { return false }

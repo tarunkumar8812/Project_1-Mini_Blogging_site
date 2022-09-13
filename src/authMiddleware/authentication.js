@@ -38,26 +38,29 @@ const authorisation = async function (req, res, next) {
 
         if (p) {
             if (!ObjectId.isValid(p.trim())) return res.status(400).send({ status: false, msg: "BlogId is not valid" })
+
             const userToBeModified = await blogModel.findOne({ _id: p })
 
             if (!userToBeModified) return res.status(404).send({ status: false, msg: "No data found" })
 
             if (userToBeModified.authorId.toString() !== userLoggedIn) return res.status(403).send({ status: false, msg: 'Access denied' })
-            next()
+
+            return next()
+
         }
 
         //----------------------this is for body----------------------
 
-        else if (Object.keys(body) > 0) {
+        if (body && Object.values(body).length > 0) {
             if (!b) { return res.status(400).send({ status: false, msg: "AuthorId is required" }) }
 
-            if (typeof b !== "string") { return res.status(400).send({ status: false, msg: "AuthorId is not valid " }) }
+            if (typeof b !== "string") { return res.status(400).send({ status: false, msg: "AuthorId is not valid" }) }
 
             if (!ObjectId.isValid(b.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
 
             const userToBeModified = await authorModel.findOne({ _id: b })
 
-            if (!userToBeModified) return res.status(400).send({ status: false, msg: "No Data Found" })
+            if (!userToBeModified) return res.status(400).send({ status: false, msg: "No data found" })
 
             if (userToBeModified._id.toString() !== userLoggedIn) return res.status(403).send({ status: false, msg: 'Access denied' })
             next()
@@ -80,9 +83,9 @@ const authorisation = async function (req, res, next) {
             if (q.subcategory && q.subcategory.trim() !== "") { temp.subcategory = q.subcategory.trim() }
 
             if (q.ispublished && q.ispublished.trim() !== "") {
-                if (q.ispublished.trim() == "false") {
-                    temp.isPublished = false
-                } else { temp.isPublished = true }
+                if (q.ispublished.trim() == "true") { temp.isPublished = true }
+                if (q.ispublished.trim() == "false") { temp.isPublished = false }
+                else { return res.status(400).send({ status: false, msg: "Value of ispublished can be true or false only" }) }
             }
             if (Object.values(temp) == 0) return res.status(400).send({ status: false, msg: "please apply filter" })
 
