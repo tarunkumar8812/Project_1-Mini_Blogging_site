@@ -6,7 +6,7 @@ const app = express();
 const moment = require("moment")
 
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true })); // -->  it is not mandatory
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb+srv://TarunKumar123:xLcX9W1SI9646ftM@cluster1.tpwtwiv.mongodb.net/Project_1", {
     useNewUrlParser: true  
@@ -18,12 +18,13 @@ app.use(
     function (req, res, next) {
         let time = moment().format("DD/MM/YYYY hh:mm:ss a")
         let url = req.url
-        console.log("url : " + url, " time : " + time);
+        // console.log("url : " + url, " time : " + time);
+        console.log(`time : ${time} , url : ${url} `);
         next();
     }
 );
 
-app.use('/', route);// -->  url starts from ' / '
+app.use('/', route);
 
 app.listen(process.env.PORT || 3000, function () {
     console.log('Express app running on port ' + (process.env.PORT || 3000))

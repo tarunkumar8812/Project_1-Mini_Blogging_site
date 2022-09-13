@@ -2,25 +2,27 @@ const express = require('express');
 const router = express.Router();
 const authorController = require("../controllers/authorController")
 const blogController = require("../controllers/blogController")
-const loginController = require("../controllers/loginController")
 const authMiddleware = require("../authMiddleware/authentication")
 
 
+// --------------- Author's APIs ------------------
+router.post("/authors", authorController.createAuthor)
 
-router.post("/authors", authorController.createAuthor) // to create authors
+router.post("/login", authorController.login)
 
-router.post("/blogs", authMiddleware.authenticate, authMiddleware.authorisation, blogController.createBlogs) // to create blogs
 
-router.get("/blogs", authMiddleware.authenticate, blogController.getBlogs) // to finding blogs
+// --------------- Blogs's APIs ------------------
 
-router.delete("/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorisation, blogController.deleteBlogsByParam) // to deleting blogs by param
+router.post("/blogs", authMiddleware.authenticate, authMiddleware.authorisation, blogController.createBlogs)
 
-router.delete("/blogs", authMiddleware.authenticate, authMiddleware.authorisation, blogController.deleteBlogsByQuery) // to deleting blogs by query
+router.get("/blogs", authMiddleware.authenticate, blogController.getBlogs)
 
-router.put("/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorisation, blogController.updateBlog) // to updating blogs by param
+router.put("/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorisation, blogController.updateBlog)
 
-// phase - 2
+router.delete("/blogs/:blogId", authMiddleware.authenticate, authMiddleware.authorisation, blogController.deleteBlogsByParam)
 
-router.post("/login", loginController.login) // to login , authentication and authoriztion 
+router.delete("/blogs", authMiddleware.authenticate, authMiddleware.authorisation, blogController.deleteBlogsByQuery)
+
+
 
 module.exports = router;

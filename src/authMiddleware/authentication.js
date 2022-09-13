@@ -10,13 +10,10 @@ const ObjectId = mongoose.Types.ObjectId //check whether the format or objectid 
 const authenticate = function (req, res, next) {
     try {
         let token = req.headers["x-api-key"];
-        // console.log(token);
-        if (!token) return res.status(400).send({ status: false, msg: "token must be present" });
+        if (!token) return res.status(400).send({ status: false, msg: "Token must be present" });
 
-        // let decodedToken =    <--- ye kaam ka nahi hai
         jwt.verify(token, "project-1-group-59", function (err, decodedToken) {
-            if (err) { return res.status(401).send({ status: false, msg: "token is invalid" }) }
-            // console.log(decodedToken);
+            if (err) { return res.status(401).send({ status: false, msg: "Token is invalid" }) }
             req.decodedToken = decodedToken
             next()
         });
@@ -32,71 +29,66 @@ const authenticate = function (req, res, next) {
 const authorisation = async function (req, res, next) {
     try {
         const p = req.params.blogId
-        const b = req.body.authorId
+        const body = req.body
+        const b = body.authorId
         const q = req.query
-        // console.log(q);
-
         let userLoggedIn = req.decodedToken.authorId
 
+        //----------------------this is for path params----------------------
+
         if (p) {
-            //console.log("p - " + p);
             if (!ObjectId.isValid(p.trim())) return res.status(400).send({ status: false, msg: "BlogId is not valid" })
             const userToBeModified = await blogModel.findOne({ _id: p })
 
-            if (!userToBeModified) return res.status(403).send({ status: false, msg: "Access denied" })
+            if (!userToBeModified) return res.status(404).send({ status: false, msg: "No data found" })
 
             if (userToBeModified.authorId.toString() !== userLoggedIn) return res.status(403).send({ status: false, msg: 'Access denied' })
             next()
         }
-        else if (b) {
-            // console.log(b);
-            if (typeof b !== "string") { return res.status(400).send({ status: false, msg: "AuthorId is not valid " }) }
-            if (!ObjectId.isValid(b.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
-            const userToBeModified = await authorModel.findOne({ _id: b })
-            // console.log(" userToBeModified - " + userToBeModified);
 
-            if (!userToBeModified) return res.status(400).send({ status: false, msg: "No Data Found" })  // ye sonali mam ne bataya tha
+        //----------------------this is for body----------------------
+
+        else if (Object.keys(body) > 0) {
+            if (!b) { return res.status(400).send({ status: false, msg: "AuthorId is required" }) }
+
+            if (typeof b !== "string") { return res.status(400).send({ status: false, msg: "AuthorId is not valid " }) }
+
+            if (!ObjectId.isValid(b.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
+
+            const userToBeModified = await authorModel.findOne({ _id: b })
+
+            if (!userToBeModified) return res.status(400).send({ status: false, msg: "No Data Found" })
 
             if (userToBeModified._id.toString() !== userLoggedIn) return res.status(403).send({ status: false, msg: 'Access denied' })
             next()
         }
 
-        else {  //this is for query 
-            //authorId for the logged-in user
+        //----------------------this is for query params----------------------
 
+        else {
             const temp = {}
-            //console.log(q.category);
 
             if (q.category && q.category.trim() !== "") { temp.category = q.category.trim() }
-            // this is for captital "authorid"
-            // if (q.authorid && q.authorid.trim() !== "") {
-            //     if (!ObjectId.isValid(q.authorid.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
-            //     temp.authorId = q.authorid.trim()
-            // }
-            // this is for captital "authorId"
+
             if (q.authorId && q.authorId.trim() !== "") {
                 if (!ObjectId.isValid(q.authorId.trim())) return res.status(400).send({ status: false, msg: "AuthorId is not valid" })
                 temp.authorId = q.authorId.trim()
             }
 
-            // this is for "tags"
             if (q.tags && q.tags.trim() !== "") { temp.tags = q.tags.trim() }
-            // this is for "tag"
-            // if (q.tag && q.tag.trim() !== "") { temp.tag = q.tag.trim() }
 
             if (q.subcategory && q.subcategory.trim() !== "") { temp.subcategory = q.subcategory.trim() }
 
-            if (q.unpublished && q.unpublished.trim() !== "") {
-                if (q.unpublished.trim() == "false") {
-                    temp.isPublished = false 
+            if (q.ispublished && q.ispublished.trim() !== "") {
+                if (q.ispublished.trim() == "false") {
+                    temp.isPublished = false
                 } else { temp.isPublished = true }
             }
             if (Object.values(temp) == 0) return res.status(400).send({ status: false, msg: "please apply filter" })
 
             const userToBeModified = await blogModel.findOne(temp)
-            //console.log("temp - " + userToBeModified);
 
-            if (!userToBeModified) return res.status(403).send({ status: false, msg: 'Access denied' }) //Ma'am
+            if (!userToBeModified) return res.status(404).send({ status: false, msg: 'No data found' })
 
             if (userToBeModified.authorId.toString() !== userLoggedIn) return res.status(403).send({ status: false, msg: 'Access denied' })
             req.savedTemp = temp
@@ -109,5 +101,6 @@ const authorisation = async function (req, res, next) {
     }
 }
 
-module.exports.authenticate = authenticate
-module.exports.authorisation = authorisation
+
+
+module.exports = { authenticate, authorisation }
