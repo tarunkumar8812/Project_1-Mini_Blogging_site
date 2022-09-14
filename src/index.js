@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb+srv://TarunKumar123:xLcX9W1SI9646ftM@cluster1.tpwtwiv.mongodb.net/Project_1", {
-    useNewUrlParser: true  
+    useNewUrlParser: true
 })
     .then(() => console.log("MongoDb is connected"))
     .catch(err => console.log(err))
@@ -18,7 +18,6 @@ app.use(
     function (req, res, next) {
         let time = moment().format("DD/MM/YYYY hh:mm:ss a")
         let url = req.url
-        // console.log("url : " + url, " time : " + time);
         console.log(`time : ${time} , url : ${url} `);
         next();
     }

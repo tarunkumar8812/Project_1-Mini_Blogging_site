@@ -137,7 +137,9 @@ const deleteBlogsByParam = async function (req, res) {
     try {
         const blogId = req.params.blogId
 
-        await blogModel.findByIdAndUpdate(blogId, { isDeleted: true, deletedAt: moment() }, { new: true })
+        const toBeDeleted = await blogModel.findOneAndUpdate({ _id: blogId, isDeleted: false }, { isDeleted: true, deletedAt: moment() }, { new: true })
+
+        if (!toBeDeleted) return res.status(404).send({ status: true, msg: "No data found" })
 
         return res.status(200).send({ status: true, msg: "Successfully deleted" })
     }
