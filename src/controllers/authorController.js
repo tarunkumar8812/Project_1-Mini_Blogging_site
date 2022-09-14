@@ -33,7 +33,7 @@ const createAuthor = async function (req, res) {
         if (!isValidEmail(email)) return res.status(400).send({ status: false, msg: "Invalid Email..  ex. ( abc12@gmail.com ) " })
 
         const emailExist = await authorModel.findOne({ email: email })
-        if (emailExist) return res.status(400).send({ status: false, msg: `${email.trim()} email already exists` })
+        if (emailExist) return res.status(409).send({ status: false, msg: `${email.trim()} email already exists` })
 
 
         if (!password) return res.status(400).send({ status: false, msg: "Password is mandatory" })
