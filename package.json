@@ -1,7 +1,7 @@
 {
-  "name": "src",
+  "name": "Mini Blogging Site",//src
   "version": "1.0.0",
-  "description": "Backend cohort",
+  "description": "in this website authors can write blogs and they can modify their blogs as well. readers can come and read blogs of their choices",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
